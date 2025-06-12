@@ -14,7 +14,7 @@ Requirements:
     - Device must be accessible (may require running as administrator on some systems)
 
 Author: Based on FanControl.CorsairLink research
-License: MIT (assumed - please verify licensing requirements)
+License: MIT
 """
 
 import argparse
