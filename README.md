@@ -21,7 +21,7 @@ This work is based on research from the [FanControl.CorsairLink](https://github.
 ### **Installation & Usage**
 
 1. **Clone the repository and install dependencies:**  
-   git clone https://github.com/your-username/iCUE-LINK-Telemetry-Reader.git  
+   git clone https://github.com/cwawak/iCUE-LINK-Telemetry-Reader.git  
    cd iCUE-LINK-Telemetry-Reader  
    pip install hidapi
 
