@@ -14,13 +14,17 @@ import logging
 import time
 from typing import Dict, Optional, Tuple
 
-from prometheus_client import start_http_server, Gauge, REGISTRY
+from prometheus_client import start_http_server, Gauge, CollectorRegistry
 from icue_link_telemetry import CorsairLinkDevice, CorsairLinkError
 
-# Prometheus metric definitions
-PUMP_RPM = Gauge('icue_link_pump_rpm', 'Pump speed in RPM')
-WATER_TEMP = Gauge('icue_link_water_temp', 'Water temperature in Celsius')
-FAN_RPM = Gauge('icue_link_fan_rpm', 'Fan speed in RPM', ['fan_id'])
+# Create a custom registry to hold our metrics. This is a more robust
+# way to disable default metrics across different library versions.
+custom_registry = CollectorRegistry()
+
+# Prometheus metric definitions registered with our custom registry
+PUMP_RPM = Gauge('icue_link_pump_rpm', 'Pump speed in RPM', registry=custom_registry)
+WATER_TEMP = Gauge('icue_link_water_temp', 'Water temperature in Celsius', registry=custom_registry)
+FAN_RPM = Gauge('icue_link_fan_rpm', 'Fan speed in RPM', ['fan_id'], registry=custom_registry)
 
 class ICueLinkExporter:
     """Prometheus exporter for iCUE LINK System Hub telemetry."""
@@ -90,8 +94,8 @@ class ICueLinkExporter:
         self.logger.info(f"Starting iCUE LINK Prometheus exporter on port {self.port}")
         self.logger.info(f"Updating metrics every {self.update_interval} seconds")
         
-        # Start HTTP server with default metrics disabled
-        start_http_server(self.port, registry=REGISTRY, disable_default_metrics=True)
+        # Start HTTP server with our custom registry to avoid default metrics
+        start_http_server(self.port, registry=custom_registry)
         
         while True:
             self._update_metrics()
@@ -145,4 +149,4 @@ def main() -> None:
             exporter.device.disconnect()
 
 if __name__ == '__main__':
-    main() 
+    main()
