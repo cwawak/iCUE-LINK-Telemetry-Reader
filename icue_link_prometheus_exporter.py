@@ -14,7 +14,7 @@ import logging
 import time
 from typing import Dict, Optional, Tuple
 
-from prometheus_client import start_http_server, Gauge
+from prometheus_client import start_http_server, Gauge, REGISTRY
 from icue_link_telemetry import CorsairLinkDevice, CorsairLinkError
 
 # Prometheus metric definitions
@@ -90,7 +90,8 @@ class ICueLinkExporter:
         self.logger.info(f"Starting iCUE LINK Prometheus exporter on port {self.port}")
         self.logger.info(f"Updating metrics every {self.update_interval} seconds")
         
-        start_http_server(self.port)
+        # Start HTTP server with default metrics disabled
+        start_http_server(self.port, registry=REGISTRY, disable_default_metrics=True)
         
         while True:
             self._update_metrics()
